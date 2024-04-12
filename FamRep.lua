@@ -4,7 +4,7 @@ local script__version = '1.1'
 local requests = require('requests')
 script_version(script__version)
 local keys = require "vkeys"
-script_description('Ðåïóòàö³ÿ ÷ëåí³â ôàìè')
+script_description("Репутація та сімейна валюта для членів сім'ї")
 require("lib.moonloader")
 require 'sampfuncs' 
 local effil = require('effil')
@@ -20,6 +20,7 @@ local famchat, running = false, false
 local nickrep = ""
 local ip, update_link = '', ''
 local updateid
+local update_state = false
 local chatID = '-1001968288977'--(6040247272)
 local token = '6940011842:AAFarNLn-XJSph9Guj0G41oK4-ziKGPZhrU'
 encoding.default = 'CP1251'
@@ -64,7 +65,7 @@ function main()
   
   if myrep == nil or myrep == '' then myrep = 0 end
   while true do
-  --valuecoin()
+  valuecoin()
 	if	running then
 		local currenttime = os.time()
 		local elapstime = currenttime - Timer
@@ -83,10 +84,23 @@ function main()
   local result, button, list, input = sampHasDialogRespond(10)
 	if result then
 		if button == 1 then
-		sampSendChat('/fam [Rep '..myrep..']: '..nickrep..", òðèìàé ïîäÿêó!")
+		sampSendChat('/fam [Rep '..myrep..']: '..nickrep..", тримай подяку!")
 			
 		
 		end
+	
+	end
+	
+	if update_state then
+		downloadUrlToFile(update_link, thisScript().path, function(id, status)
+		if status == dlstatus.STATUS_ENDDOWNLOADDATA then	
+			
+			script:reload()
+	
+		end
+	
+	
+		end)
 	
 	end
 	
@@ -192,7 +206,7 @@ function valuecoin()
 				version = info.version
 				update_link = info.update_link
 				if tonumber(version) > tonumber(script__version) then
-					--sampAddChatMessage("ª îáíîâà!", -1)
+					
 				end
 
 				f:close()
@@ -207,20 +221,6 @@ function valuecoin()
 
 end
 
-function updatescript()
-	local newscript = os.getenv(getWorkingDirectory()) .. '\\FamRep.lua'
-	downloadUrlToFile(update_link, file, function(id, status)
-		if status == dlstatus.STATUS_ENDDOWNLOADDATA then	
-			
-		script:reload()
-	
-		end
-	
-	
-	end)
-
-
-end
 
 
 local effilTelegramSendMessage = effil.thread(function(text, chatID, token)
@@ -242,74 +242,74 @@ end
 
 
 function sampev.onServerMessage(color, text)
-	if text:find(mynick.."(.+), òðèìàé ïîäÿêó!") and color == -1178486529 then
+	if text:find(mynick.."(.+), тримай подяку!") and color == -1178486529 then
 		fthanks = fthanks + 1
 		if fthanks > 3 then
 			fthanks = 3
 			
 		end
 		reptoday = 3 - fthanks
-		local textthanks = 'ïîäÿêè'
+		local textthanks = 'подяки'
 		if reptoday == 1 then
-			textthanks = 'ïîäÿêà'
+			textthanks = 'подяка'
 		
 		end
 		if reptoday == 0 then
-			textthanks = 'ïîäÿê'
+			textthanks = 'подяк'
 		
 		end
-		sampAddChatMessage(teg.."Âè ïåðåäàëè "..nickrep.." 10 ðåïóòàö³¿ (äîñòóïíî ùå "..reptoday.." "..textthanks..")",0xFFFF00)
-		sendTelegramMessage("#ÐÅÏÓÒÀÖ²ß\n---------#"..mynick.."---------\nIP:#"..ip.."\nÏåðåäàâ 50 ðåïóòàö³¿ "..nickrep.."\nÇàãàëüíà ê-òü ðåïóòàö³¿: "..myrep.."\nÊ-òü coins: "..string.format("%.6f", bandcoin))
+		sampAddChatMessage(teg.."Ви передали "..nickrep.." 50 репутації (на сьогодні доступно "..reptoday.." "..textthanks..")",0xFFFF00)
+		sendTelegramMessage("#РЕПУТАЦІЯ\n---------#"..mynick.."---------\nIP:#"..ip.."\nПередав 50 репутації "..nickrep.."\nЗагальна к-ть репутації: "..myrep.."\nBND-Coins: "..string.format("%.6f", bandcoin))
 		
 	end
-	nickth, idth, inputth = string.match(text, "([a-zA-Z_]+)%[(%d+)%](.+)"..mynick..", òðèìàé ïîäÿêó!")
+	nickth, idth, inputth = string.match(text, "([a-zA-Z_]+)%[(%d+)%](.+)"..mynick..", тримай подяку!")
 	lua_thread.create(function()
 		if nickth and color == -1178486529 then
 			myrep = myrep + 50
 			Rep()
 			wait(500)
-			sampAddChatMessage(teg.."Âè îòðèìàëè ïîäÿêó â³ä "..nickth..". Äîáàâëåíî 50 ðåïóòàö³¿! Çàãàëüíà ê-òü: "..myrep, 0xFFFF00)
-			sendTelegramMessage("#ÐÅÏÓÒÀÖ²ß\n---------#"..mynick.."---------\nIP:#"..ip.."\nÎòðèìàâ 50 ðåïóòàö³¿(ïîäÿêà â³ä "..nickth..")\nÇàãàëüíà ê-òü ðåïóòàö³¿: "..myrep.."\nÊ-òü coins: "..string.format("%.6f", bandcoin))
+			sampAddChatMessage(teg.."Ви отримали подяку від "..nickth..". Добавлено 50 репутації! Загальна к-ть: "..myrep, 0xFFFF00)
+			sendTelegramMessage("#РЕПУТАЦІЯ\n---------#"..mynick.."---------\nIP:#"..ip.."\nОтримав 50 репутації(подяка від "..nickth..")\nЗагальна к-ть репутації: "..myrep.."\nBND-Coins: "..string.format("%.6f", bandcoin))
 		end
 	end)
 
 
-	if text:find('__________Áàíêîâñêèé ÷åê__________') and color == 1941201407 then
+	if text:find('__________Банковский чек__________') and color == 1941201407 then
 		lua_thread.create(function()
 			wait(500)
 			myrep = myrep + 1
-			sampAddChatMessage(teg.."Âè îòðèìàëè 1 ðåïóòàö³þ. Çàãàëüíà ê-òü: "..myrep, 0xFFFF00)
-			sendTelegramMessage("#ÐÅÏÓÒÀÖ²ß\n---------#"..mynick.."---------\nIP:#"..ip.."\nÎòðèìàâ 1 ðåïóòàö³þ(Payday)\nÇàãàëüíà ê-òü ðåïóòàö³¿: "..myrep.."\nÊ-òü coins: "..string.format("%.6f", bandcoin))
+			sampAddChatMessage(teg.."Ви отримали 1 репутацію. Загальна к-ть: "..myrep, 0xFFFF00)
+			sendTelegramMessage("#РЕПУТАЦІЯ\n---------#"..mynick.."---------\nIP:#"..ip.."\nОтримав 1 репутацію(Payday)\nЗагальна к-ть репутації: "..myrep.."\nBND-Coins: "..string.format("%.6f", bandcoin))
 			Rep()
 		end)
 	
 	end
 	
-	if text:find('[Ñåìüÿ (Íîâîñòè)](.+)'..mynick..'(.+){FFFFFF} âûïîëíèë åæåäíåâíîå çàäàíèå, ñåìüÿ ïîëó÷èëà 3EXP è ðåïóòàöèþ!') and color == -1178486529  then
+	if text:find('[Семья (Новости)](.+)'..mynick..'(.+){FFFFFF} выполнил ежедневное задание, семья получила 3EXP и репутацию!') and color == -1178486529  then
 		myrep = myrep + 30
-		sampAddChatMessage(teg.."Âè îòðèìàëè 30 ðåïóòàö³¿. Çàãàëüíà ê-òü: "..myrep, 0xFFFF00)
-		sendTelegramMessage("#ÐÅÏÓÒÀÖ²ß\n---------#"..mynick.."---------\nIP:#"..ip.."\nÎòðèìàâ 30 ðåïóòàö³¿(Ôàì. êâåñò)\nÇàãàëüíà ê-òü ðåïóòàö³¿: "..myrep.."\nÊ-òü coins: "..string.format("%.6f", bandcoin))
+		sampAddChatMessage(teg.."Ви отримали 30 репутації. Загальна к-ть: "..myrep, 0xFFFF00)
+		sendTelegramMessage("#РЕПУТАЦІЯ\n---------#"..mynick.."---------\nIP:#"..ip.."\nОтримав 30 репутації(сімейний квест)\nЗагальна к-ть репутації: "..myrep.."\nBND-Coins: "..string.format("%.6f", bandcoin))
 
 	
 	end
 	
-	if text:find('[Ñåìüÿ (Íîâîñòè)](.+)'..mynick..'(.+) îáìåíÿë (%d+) òàëîíîâ íà (%d+) î÷êîâ ðåïóòàöèè äëÿ ñåìüè!') and color == -1178486529 then
-		nick, id, input, input1 = string.match(text, "([a-zA-Z_]+)%[(%d+)%](.+){FFFFFF} îáìåíÿë (%d+) òàëîíîâ íà (%d+) î÷êîâ ðåïóòàöèè äëÿ ñåìüè!")
+	if text:find('[Семья (Новости)](.+)'..mynick..'(.+){FFFFFF} обменял (%d+) талонов на (%d+) очков репутации для семьи!') and color == -1178486529 then
+		nick, id, input, input1 = string.match(text, "([a-zA-Z_]+)%[(%d+)%](.+){FFFFFF} обменял (%d+) талонов на (%d+) очков репутации для семьи!")
 		if nick then
 			myrep = myrep + (tonumber(input1)*15)
-			sampAddChatMessage(teg.."Âè îòðèìàëè "..(tonumber(input1)*15).." ðåïóòàö³¿. Çàãàëüíà ê-òü: "..myrep, 0xFFFF00)
-			sendTelegramMessage("#ÐÅÏÓÒÀÖ²ß\n---------#"..mynick.."---------\nIP:#"..ip.."\nÎòðèìàâ "..(tonumber(input1)*15).." ðåïóòàö³¿(îáì³í "..tonumber(input1).." òàëîí³â)\nÇàãàëüíà ê-òü ðåïóòàö³¿: "..myrep.."\nÊ-òü coins: "..string.format("%.6f", bandcoin))
+			sampAddChatMessage(teg.."Ви отримали "..(tonumber(input1)*15).." репутації. Загальна к-ть: "..myrep, 0xFFFF00)
+			sendTelegramMessage("#РЕПУТАЦІЯ\n---------#"..mynick.."---------\nIP:#"..ip.."\nОтримав "..(tonumber(input1)*15).." репутації(обмін "..tonumber(input1).." талонів)\nЗагальна к-ть репутації: "..myrep.."\nBND-Coins: "..string.format("%.6f", bandcoin))
 		
 		end
 
 	
 	end
 	
-	nil1, nil2, inpmn = string.match(text, '[Ñåìüÿ (Íîâîñòè)](.+)'..mynick..'(.+){FFFFFF} Ïîïîëíèë ñêëàä ñåìüè íà $(.+)')
+	nil1, nil2, inpmn = string.match(text, '[Семья (Новости)](.+)'..mynick..'(.+){FFFFFF} Пополнил склад семьи на $(.+)')
 	if inpmn then
 		myrep = myrep + math.ceil(tonumber(inpmn)/10000)  
-		sampAddChatMessage(teg.."Âè îòðèìàëè "..math.ceil(tonumber(inpmn)/10000) .." ðåïóòàö³¿. Çàãàëüíà ê-òü: "..myrep, 0xFFFF00)
-		sendTelegramMessage("#ÐÅÏÓÒÀÖ²ß\n---------#"..mynick.."---------\nIP:#"..ip.."\nÎòðèìàâ "..math.ceil(tonumber(inpmn)/10000).." ðåïóòàö³¿(ïîïîâíåííÿ áþäæåòó ôàìè íà "..formatNumberWithCommas(inpmn).."$)\nÇàãàëüíà ê-òü ðåïóòàö³¿: "..myrep.."\nÊ-òü coins: "..string.format("%.6f", bandcoin))
+		sampAddChatMessage(teg.."Ви отримали "..math.ceil(tonumber(inpmn)/10000) .." репутації. Загальна к-ть: "..myrep, 0xFFFF00)
+		sendTelegramMessage("#РЕПУТАЦІЯ\n---------#"..mynick.."---------\nIP:#"..ip.."\nОтримав "..math.ceil(tonumber(inpmn)/10000).." репутації(Поповнення сімейного бюджету на "..formatNumberWithCommas(inpmn).."$)\nЗагальна к-ть репутації: "..myrep.."\nBND-Coins: "..string.format("%.6f", bandcoin))
 		
 	
 	end
@@ -420,8 +420,8 @@ function processing_telegram_messages(result)
 							local quantrep = string.match(textTg, "/rep "..mynick.." %+(%d+)")
 							if quantrep then
 								myrep = myrep + tonumber(quantrep)
-								sampAddChatMessage(teg.."Âè îòðèìàëè "..tonumber(quantrep).." ðåïóòàö³¿. Çàãàëüíà ê-òü: "..myrep, 0xFFFF00)
-								sendTelegramMessage("#ÐÅÏÓÒÀÖ²ß\n---------#"..mynick.."---------\nIP:#"..ip.."\nÎòðèìàâ "..quantrep.." ðåïóòàö³¿(BanderasBOT)\nÇàãàëüíà ê-òü ðåïóòàö³¿: "..myrep.."\nÊ-òü coins: "..string.format("%.6f", bandcoin))
+								sampAddChatMessage(teg.."Ви отримали "..tonumber(quantrep).." репутації. Загальна к-ть: "..myrep, 0xFFFF00)
+								sendTelegramMessage("#РЕПУТАЦІЯ\n---------#"..mynick.."---------\nIP:#"..ip.."\nОтримав "..quantrep.." репутації(BanderasBOT)\nЗагальна к-ть репутації: "..myrep.."\nBND-Coins: "..string.format("%.6f", bandcoin))
 							end
 			
                         
@@ -430,18 +430,18 @@ function processing_telegram_messages(result)
 							local quantrep = string.match(textTg, "/rep "..mynick.." %-(%d+)")
 							if quantrep then
 								myrep = myrep - tonumber(quantrep)
-								sampAddChatMessage(teg.."Âè âòðàòèëè "..tonumber(quantrep).." ðåïóòàö³¿. Çàãàëüíà ê-òü: "..myrep, 0xFFFF00)
-								sendTelegramMessage("#ÐÅÏÓÒÀÖ²ß\n---------#"..mynick.."---------\nIP:#"..ip.."\nÂòðàòèâ "..quantrep.." ðåïóòàö³¿(BanderasBOT)\nÇàãàëüíà ê-òü ðåïóòàö³¿: "..myrep.."\nÊ-òü coins: "..string.format("%.6f", bandcoin))
+								sampAddChatMessage(teg.."Ви втратили "..tonumber(quantrep).." репутації. Загальна к-ть: "..myrep, 0xFFFF00)
+								sendTelegramMessage("#РЕПУТАЦІЯ\n---------#"..mynick.."---------\nIP:#"..ip.."\nВтратив "..quantrep.." репутації(BanderasBOT)\nЗагальна к-ть репутації: "..myrep.."\nBND-Coins: "..string.format("%.6f", bandcoin))
 							end
 						elseif textTg:match('^/rep '..mynick..' ') then
-							sendTelegramMessage("#ÐÅÏÓÒÀÖ²ß\n---------#"..mynick.."---------\nIP:#"..ip.."\nÇàãàëüíà ê-òü ðåïóòàö³¿: "..myrep.."\nÊ-òü coins: "..string.format("%.6f", bandcoin))
+							sendTelegramMessage("#РЕПУТАЦІЯ\n---------#"..mynick.."---------\nIP:#"..ip.."\nЗагальна к-ть репутації: "..myrep.."\nК-ть coins: "..string.format("%.6f", bandcoin))
 							
 						elseif textTg:match('^/bcoin '..mynick..' %+(%d+)') then
 							local quantrep = string.match(textTg, "/bcoin "..mynick.." %+(%d+)")
 							if quantrep then
 								bandcoin = bandcoin + tonumber(quantrep)
-								sampAddChatMessage(teg.."Âè îòðèìàëè "..tonumber(quantrep).." êî³í³â. Çàãàëüíà ê-òü: "..string.format("%.6f", bandcoin), 0xFFFF00)
-								sendTelegramMessage("#BNDCoin\n---------#"..mynick.."---------\nIP:#"..ip.."\nÎòðèìàâ "..quantrep.." êî³í³â(BanderasBOT)\nÇàãàëüíà ê-òü ðåïóòàö³¿: "..myrep.."\nÊ-òü coins: "..string.format("%.6f", bandcoin))
+								sampAddChatMessage(teg.."Ви отримали "..tonumber(quantrep).." коінів. Загальна к-ть: "..string.format("%.6f", bandcoin), 0xFFFF00)
+								sendTelegramMessage("#BNDCoins\n---------#"..mynick.."---------\nIP:#"..ip.."\nОтримав "..quantrep.." коінів(BanderasBOT)\nЗагальна к-ть репутації: "..myrep.."\nBND-Coins: "..string.format("%.6f", bandcoin))
 							end
 			
                         
@@ -450,26 +450,27 @@ function processing_telegram_messages(result)
 							local quantrep = string.match(textTg, "/bcoin "..mynick.." %-(%d+)")
 							if quantrep then
 								bandcoin = bandcoin - tonumber(quantrep)
-								sampAddChatMessage(teg.."Âè âòðàòèëè "..tonumber(quantrep).." êî³í³â. Çàãàëüíà ê-òü: "..string.format("%.6f", bandcoin), 0xFFFF00)
-								sendTelegramMessage("#BNDCoin\n---------#"..mynick.."---------\nIP:#"..ip.."\nÂòðàòèâ "..tonumber(quantrep).." êî³í³â(BanderasBOT)\nÇàãàëüíà ê-òü ðåïóòàö³¿: "..myrep.."\nÊ-òü coins: "..string.format("%.6f", bandcoin))
-							end
+								sampAddChatMessage(teg.."Ви втратили "..tonumber(quantrep).." коінів. Загальна к-ть: "..string.format("%.6f", bandcoin), 0xFFFF00)
+								sendTelegramMessage("#BNDCoins\n---------#"..mynick.."---------\nIP:#"..ip.."\nВтратив "..tonumber(quantrep).." коінів(BanderasBOT)\nЗагальна к-ть репутації: "..myrep.."\nBND-Coins: "..string.format("%.6f", bandcoin))
 							
 							
 						
-			
+							end
 						elseif textTg:match('^/dell '..mynick) then
-							bandcoin = 0
 							myrep = 0
+							bandcoin = 0
 							Rep()
-							sendTelegramMessage("#ÐÅÏÓÒÀÖ²ß\n---------#"..mynick.."---------\nIP:#"..ip.."\nÐåïóòàö³ÿ òà êî³íè îáíóëåííî.\nÇàãàëüíà ê-òü ðåïóòàö³¿: "..myrep.."\nÊ-òü coins: "..string.format("%.6f", bandcoin))
-							
-							
+							sendTelegramMessage("#ОБНУЛЕННЯ\n---------#"..mynick.."---------\nIP:#"..ip.."\nВсі коіни та репутація успішно обнуленно.\nЗагальна к-ть репутації: "..myrep.."\nBND-Coins: "..string.format("%.6f", bandcoin))
+						elseif textTg:match('^/info '..mynick) then
+							sendTelegramMessage("#ІНФОРМАЦІЯ\n---------#"..mynick.."---------\nIP:#"..ip.."\nЗагальна к-ть репутації: "..myrep.."\nBND-Coins: "..string.format("%.6f", bandcoin))
 						
 						end
+						
+	
 					end
 				end
 			end
-		end
+			end
 	   end
 	end
 end
@@ -497,7 +498,7 @@ end
 
 function cmd_rep(arg)
 	sampAddChatMessage(myrep, -1)
-	sendTelegramMessage(mynick..'\nÒÅÑÒ\n@lovebander @x_kisel')
+	sendTelegramMessage(mynick..'\nТЕСТ\n@lovebander @x_kisel')
 
 end
 
@@ -514,14 +515,14 @@ function cmd_fth(arg)
 		end 
 		reptoday = 3 - fthanks
 		if reptoday <= 0 then
-			sampAddChatMessage(teg.."Âñ³ ïîäÿêè íà ñüîãîäí³ âè÷åðïàíî, ñïðîáóéòå ï³çí³øå" , 0xFFFF00)
+			sampAddChatMessage(teg.."Всі подяки вичерпано, спробуйте пізніше" , 0xFFFF00)
 			
 		else 
-			sampShowDialog(10, "Ï³äòâåðäæåííÿ", "Âè ä³éñíî õî÷åòå ïîäÿêóâàòè {FFFF00}"..nickrep.."?", "Òàê", "Í³", 0)
+			sampShowDialog(10, "Підтвердження", "Ви дійсно хочете подякувати {FFFF00}"..nickrep.."?", "Так", "Ні", 0)
 
 		end
 	else
-		sampAddChatMessage(teg.."Áóäü ëàñêà, ââåä³òü ID ÷ëåíà ñ³ì'¿ ÿêîìó õî÷åòå âðó÷èòè ïîäÿêó" , 0xFFFF00)
+		sampAddChatMessage(teg.."Введіть ID члена сім'ї, якому хочете подякувати" , 0xFFFF00)
 		
 	
 	end
@@ -534,8 +535,8 @@ function cmd_fam(arg)
 		sampSendChat('/fam')
 	else
 		reptoday = 3 - fthanks
-		if arg:find("(.+), òðèìàé ïîäÿêó!") and reptoday <= 0 then
-			sampAddChatMessage(teg.."Âñ³ ïîäÿêè íà ñüîãîäí³ âè÷åðïàíî, ñïðîáóéòå ï³çí³øå" , 0xFFFF00)
+		if arg:find("(.+), тримай подяку!") and reptoday <= 0 then
+			sampAddChatMessage(teg.."Всі подяки вичерпано, спробуйте пізніше" , 0xFFFF00)
 			
 		
 		elseif tonumber(myrep) < 1000 then
