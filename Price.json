@@ -1,1 +1,14 @@
-
+{
+"price_rep": "0.01",
+"price_dep": "1000",
+"price_legend": "3750",
+"price_armor": "1250",
+"price_farm": "50",
+"price_rang2": "10",
+"price_rang3": "15",
+"price_rang4": "20",
+"price_rang5": "25",
+"price_rang6": "30",
+"price_buy": "200000",
+"price_sell": "100000"
+}
