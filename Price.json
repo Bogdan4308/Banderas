@@ -1,6 +1,8 @@
 {
 "price_rep": "0.01",
 "price_dep": "1000",
+"price_teg": "25",
+"price_rangX": "250"
 "price_legend": "3750",
 "price_armor": "1250",
 "price_farm": "50",
