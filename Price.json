@@ -14,5 +14,6 @@
 "price_rang6": "30",
 "price_buy": "200000",
 "price_sell": "100000",
-"price_warn": "25"
+"price_warn": "25",
+"price_adv": "0.03"
 }
