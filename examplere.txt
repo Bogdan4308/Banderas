@@ -1,1 +1,4 @@
-w
+{
+"Reputation": "0",
+"BndCoin": "8.8e-05"
+}
