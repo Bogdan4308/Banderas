@@ -14,11 +14,11 @@ ffi.cdef[[
      void keybd_event(int keycode, int scancode, int flags, int extra);
 ]]
 
-local api_token = "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"
+local api_token = "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"
 local repo = "Bogdan4308/Banderas"
 local file_path = "examplere.txt"
 local branch = "main"
-local commit_message = u8"Обновлен файл"
+local commit_message = u8"ГЋГЎГ­Г®ГўГ«ГҐГ­ ГґГ Г©Г«"
 
 function asyncHttpRequest(method, url, args, resolve, reject)
     local request_thread = effil.thread(function (method, url, args)
