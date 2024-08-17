@@ -1,4 +1,4 @@
 {
 "Reputation": "59",
-"BndCoin": "0.025064"
+"BndCoin": "0.025080"
 }
